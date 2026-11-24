@@ -1,0 +1,29 @@
+/* Login Component Styles */
+
+.login-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.form-field {
+  margin-bottom: 1rem;
+}
+
+button {
+  width: 100%;
+  padding: 0.75rem;
+  background: #003366; /* navy */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

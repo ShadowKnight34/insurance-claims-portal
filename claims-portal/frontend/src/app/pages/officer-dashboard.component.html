@@ -1,0 +1,84 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Management dashboard</p>
+    <h1>Claims overview</h1>
+    <p class="lede">Figures are calculated from claim records. Rejected and settled claims are excluded from outstanding liability.</p>
+  </div>
+  <a class="button button-primary" routerLink="/officer/claims">Open the queue</a>
+</header>
+
+@if (error()) {
+  <p class="banner banner-error" role="alert">{{ error() }}</p>
+} @else if (!dashboard()) {
+  <p class="muted">Loading statistics…</p>
+} @else {
+  <section class="card-grid">
+    <article class="metric"><span>Total received</span><strong>{{ dashboard()!.totalClaims }}</strong></article>
+    <article class="metric"><span>Pending</span><strong>{{ dashboard()!.pendingClaims }}</strong></article>
+    <article class="metric"><span>Under review</span><strong>{{ dashboard()!.underReview }}</strong></article>
+    <article class="metric"><span>Awaiting information</span><strong>{{ dashboard()!.awaitingInformation }}</strong></article>
+    <article class="metric"><span>Approved</span><strong>{{ dashboard()!.approved }}</strong></article>
+    <article class="metric"><span>Rejected</span><strong>{{ dashboard()!.rejected }}</strong></article>
+    <article class="metric"><span>Settled</span><strong>{{ dashboard()!.settled }}</strong></article>
+    <article class="metric metric-accent">
+      <span>Outstanding liability</span>
+      <strong>{{ money(dashboard()!.outstandingLiability) }}</strong>
+    </article>
+    <article class="metric">
+      <span>Approved settlement</span>
+      <strong>{{ money(dashboard()!.totalApprovedSettlement) }}</strong>
+    </article>
+  </section>
+
+  <div class="split">
+    <section class="panel">
+      <div class="panel-head"><h2>By line of business</h2></div>
+      <ul class="bars">
+        @for (item of dashboard()!.byType; track item.label) {
+          <li>
+            <span>{{ item.label }}</span>
+            <strong>{{ item.count }}</strong>
+          </li>
+        }
+      </ul>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><h2>By status</h2></div>
+      <ul class="bars">
+        @for (item of dashboard()!.byStatus; track item.label) {
+          <li>
+            <span [class]="statusClass(item.label)">{{ statusLabel(item.label) }}</span>
+            <strong>{{ item.count }}</strong>
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Officer workload</h2>
+      <a routerLink="/officer/workload">Full workload</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Officer</th>
+            <th>Open claims</th>
+            <th>Ever assigned</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (officer of dashboard()!.officerWorkload; track officer.officerId) {
+            <tr>
+              <td>{{ officer.officerName }}</td>
+              <td>{{ officer.openClaims }}</td>
+              <td>{{ officer.totalAssigned }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+}

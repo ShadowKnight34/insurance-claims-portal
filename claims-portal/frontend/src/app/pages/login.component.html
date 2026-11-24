@@ -1,0 +1,38 @@
+<section class="login-screen">
+  <div class="login-panel">
+    <p class="eyebrow">Claims Portal</p>
+    <h1>Claims platform</h1>
+    <p class="lede">Sign in to submit a claim or to review the claims queue. This demo uses seeded accounts. Passwords are stored as hashes.</p>
+
+    <div class="demo-switch">
+      <button type="button" class="button button-secondary" (click)="useClaimant()">Claimant demo</button>
+      <button type="button" class="button button-secondary" (click)="useOfficer()">Officer demo</button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="stack">
+      <label>
+        Email
+        <input type="email" formControlName="email" autocomplete="username" />
+      </label>
+      @if (form.controls.email.touched && form.controls.email.invalid) {
+        <p class="field-error">Enter a valid email address.</p>
+      }
+
+      <label>
+        Password
+        <input type="password" formControlName="password" autocomplete="current-password" />
+      </label>
+      @if (form.controls.password.touched && form.controls.password.invalid) {
+        <p class="field-error">Password must be at least 8 characters.</p>
+      }
+
+      @if (error()) {
+        <p class="banner banner-error" role="alert">{{ error() }}</p>
+      }
+
+      <button class="button button-primary" type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Signing in…' : 'Sign in' }}
+      </button>
+    </form>
+  </div>
+</section>

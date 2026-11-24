@@ -1,0 +1,103 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">{{ auth.isOfficer() ? 'Claims management' : 'My claims' }}</p>
+    <h1>{{ auth.isOfficer() ? 'Incoming claims' : 'Your claims' }}</h1>
+    <p class="lede">Search by reference, location, description or claimant name.</p>
+  </div>
+  @if (auth.isClaimant()) {
+    <a class="button button-primary" routerLink="/claimant/claims/new">Submit a claim</a>
+  }
+</header>
+
+<form class="filters" [formGroup]="filters" (ngSubmit)="apply()">
+  <label>
+    Search
+    <input type="search" formControlName="search" placeholder="CLM-2026 or Singapore" />
+  </label>
+  <label>
+    Status
+    <select formControlName="status">
+      <option value="">All statuses</option>
+      <option value="Submitted">Submitted</option>
+      <option value="UnderReview">Under review</option>
+      <option value="AdditionalInformationRequired">Awaiting information</option>
+      <option value="Approved">Approved</option>
+      <option value="Rejected">Rejected</option>
+      <option value="Settled">Settled</option>
+    </select>
+  </label>
+  <label>
+    Type
+    <select formControlName="claimType">
+      <option value="">Motor and property</option>
+      <option value="Motor">Motor</option>
+      <option value="Property">Property</option>
+    </select>
+  </label>
+  @if (auth.isOfficer()) {
+    <label>
+      Queue
+      <select formControlName="queue">
+        <option value="">All claims</option>
+        <option value="mine">Assigned to me</option>
+        <option value="unassigned">Unassigned</option>
+      </select>
+    </label>
+  }
+  <div class="filter-actions">
+    <button class="button button-primary" type="submit">Apply</button>
+    <button class="button button-secondary" type="button" (click)="clear()">Clear</button>
+  </div>
+</form>
+
+@if (error()) {
+  <p class="banner banner-error" role="alert">{{ error() }}</p>
+}
+
+<section class="panel">
+  @if (loading()) {
+    <p class="muted">Loading claims…</p>
+  } @else if (items().length === 0) {
+    <p class="empty">No claims match these filters.</p>
+  } @else {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Reference</th>
+            <th>Type</th>
+            <th>Status</th>
+            @if (auth.isOfficer()) {
+              <th>Claimant</th>
+              <th>Officer</th>
+            }
+            <th>Location</th>
+            <th>Estimate</th>
+            <th>Updated</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (claim of items(); track claim.id) {
+            <tr>
+              <td><a [routerLink]="detailLink(claim.id)">{{ claim.referenceNumber }}</a></td>
+              <td>{{ claim.claimType }}</td>
+              <td><span [class]="statusClass(claim.status)">{{ statusLabel(claim.status) }}</span></td>
+              @if (auth.isOfficer()) {
+                <td>{{ claim.claimantName }}</td>
+                <td>{{ claim.assignedOfficerName || 'Unassigned' }}</td>
+              }
+              <td>{{ claim.incidentLocation }}</td>
+              <td>{{ money(claim.estimatedLossAmount) }}</td>
+              <td>{{ shortDate(claim.updatedAt) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="pager">
+      <button type="button" class="button button-secondary" (click)="previous()" [disabled]="page() === 1">Previous</button>
+      <span>Page {{ page() }} · {{ total() }} claims</span>
+      <button type="button" class="button button-secondary" (click)="next()" [disabled]="page() * pageSize >= total()">Next</button>
+    </div>
+  }
+</section>

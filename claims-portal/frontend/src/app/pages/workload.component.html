@@ -1,0 +1,28 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Management</p>
+    <h1>Officer workload</h1>
+    <p class="lede">Open claims are assignments that are not rejected or settled. The assignment history still counts every claim an officer has owned.</p>
+  </div>
+  <a class="button button-secondary" routerLink="/officer/dashboard">Back to dashboard</a>
+</header>
+
+@if (error()) {
+  <p class="banner banner-error" role="alert">{{ error() }}</p>
+} @else if (rows().length === 0) {
+  <p class="muted">Loading workload…</p>
+} @else {
+  <section class="panel">
+    @for (row of rows(); track row.officerId) {
+      <article class="workload-row">
+        <div>
+          <h2>{{ row.officerName }}</h2>
+          <p>{{ row.openClaims }} open · {{ row.totalAssigned }} assigned in total</p>
+        </div>
+        <div class="meter" aria-hidden="true">
+          <span [style.width.%]="(row.openClaims / maxOpen()) * 100"></span>
+        </div>
+      </article>
+    }
+  </section>
+}

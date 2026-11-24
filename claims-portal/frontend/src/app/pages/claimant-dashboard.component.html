@@ -1,0 +1,68 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Claimant portal</p>
+    <h1>Hello, {{ auth.user()?.fullName }}</h1>
+    <p class="lede">Track motor and property claims, upload documents, and answer requests for more information.</p>
+  </div>
+  <a class="button button-primary" routerLink="/claimant/claims/new">Submit a claim</a>
+</header>
+
+@if (error()) {
+  <p class="banner banner-error" role="alert">{{ error() }}</p>
+} @else if (loading()) {
+  <p class="muted">Loading your claims…</p>
+} @else {
+  <section class="card-grid">
+    <article class="metric">
+      <span>My claims</span>
+      <strong>{{ claims().length }}</strong>
+    </article>
+    <article class="metric">
+      <span>Submitted</span>
+      <strong>{{ count('Submitted') }}</strong>
+    </article>
+    <article class="metric">
+      <span>Awaiting my reply</span>
+      <strong>{{ count('AdditionalInformationRequired') }}</strong>
+    </article>
+    <article class="metric">
+      <span>Approved</span>
+      <strong>{{ count('Approved') + count('Settled') }}</strong>
+    </article>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Recent claims</h2>
+      <a routerLink="/claimant/claims">View all</a>
+    </div>
+    @if (claims().length === 0) {
+      <p class="empty">You have not submitted a claim yet.</p>
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Incident</th>
+              <th>Estimate</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (claim of claims().slice(0, 5); track claim.id) {
+              <tr>
+                <td><a [routerLink]="['/claimant/claims', claim.id]">{{ claim.referenceNumber }}</a></td>
+                <td>{{ claim.claimType }}</td>
+                <td><span [class]="statusClass(claim.status)">{{ statusLabel(claim.status) }}</span></td>
+                <td>{{ shortDate(claim.incidentDate) }}</td>
+                <td>{{ money(claim.estimatedLossAmount) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+}

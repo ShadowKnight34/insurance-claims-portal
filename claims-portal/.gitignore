@@ -1,0 +1,33 @@
+# Build outputs and tool caches
+**/bin/
+**/obj/
+**/out/
+**/TestResults/
+**/coverage/
+**/.vs/
+**/.dotnet/
+**/.dotnet-packages/
+**/packages/
+**/node_modules/
+**/dist/
+**/.angular/
+**/.git/
+
+# Local settings and secrets
+.env
+.env.*
+!.env.example
+**/secrets.json
+**/appsettings.Development.json
+**/appsettings.*.local.json
+**/*.pfx
+**/*.pem
+**/*.key
+**/*.user
+**/*.suo
+
+# Temporary local data
+**/uploads/
+*.log
+recovery.ps1*
+.DS_Store

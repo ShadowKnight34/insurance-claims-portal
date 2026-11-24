@@ -1,0 +1,59 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">New claim</p>
+    <h1>Submit a claim</h1>
+    <p class="lede">Describe the incident. A unique reference number is created when the claim is saved.</p>
+  </div>
+  <a class="button button-secondary" routerLink="/claimant/claims">Cancel</a>
+</header>
+
+<form class="panel form-grid" [formGroup]="form" (ngSubmit)="submit()">
+  <fieldset>
+    <legend>Claim type</legend>
+    <label class="choice"><input type="radio" formControlName="claimType" value="Motor" /> Motor</label>
+    <label class="choice"><input type="radio" formControlName="claimType" value="Property" /> Property</label>
+  </fieldset>
+
+  <label>
+    Incident date
+    <input type="date" formControlName="incidentDate" [max]="today" />
+  </label>
+  @if (form.controls.incidentDate.touched && form.controls.incidentDate.invalid) {
+    <p class="field-error">Choose the date the incident happened.</p>
+  }
+
+  <label>
+    Location
+    <input type="text" formControlName="incidentLocation" maxlength="200" placeholder="City and place" />
+  </label>
+  @if (form.controls.incidentLocation.touched && form.controls.incidentLocation.invalid) {
+    <p class="field-error">Location is required and must be 200 characters or fewer.</p>
+  }
+
+  <label>
+    Estimated loss (SGD)
+    <input type="number" formControlName="estimatedLossAmount" min="0.01" step="0.01" />
+  </label>
+  @if (form.controls.estimatedLossAmount.touched && form.controls.estimatedLossAmount.invalid) {
+    <p class="field-error">Enter an amount greater than zero and no more than 50,000,000.</p>
+  }
+
+  <label class="wide">
+    What happened
+    <textarea formControlName="incidentDescription" rows="6" maxlength="4000"></textarea>
+  </label>
+  <p class="hint wide">{{ form.controls.incidentDescription.value.length }} / 4000 characters. At least 20 characters are required.</p>
+  @if (form.controls.incidentDescription.touched && form.controls.incidentDescription.invalid) {
+    <p class="field-error wide">Describe the incident in at least 20 characters.</p>
+  }
+
+  @if (error()) {
+    <p class="banner banner-error wide" role="alert">{{ error() }}</p>
+  }
+
+  <div class="wide">
+    <button class="button button-primary" type="submit" [disabled]="submitting()">
+      {{ submitting() ? 'Submitting…' : 'Submit claim' }}
+    </button>
+  </div>
+</form>

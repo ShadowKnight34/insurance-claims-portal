@@ -1,0 +1,35 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">C</span>
+      <div>
+        <strong>Claims Portal</strong>
+        <small>Claims platform</small>
+      </div>
+    </div>
+
+    @if (auth.isClaimant()) {
+      <nav>
+        <a routerLink="/claimant/dashboard" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/claimant/claims" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">My claims</a>
+        <a routerLink="/claimant/claims/new" routerLinkActive="active">Submit a claim</a>
+      </nav>
+    } @else {
+      <nav>
+        <a routerLink="/officer/dashboard" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/officer/claims" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Claims</a>
+        <a routerLink="/officer/workload" routerLinkActive="active">Workload</a>
+      </nav>
+    }
+
+    <div class="sidebar-user">
+      <p class="user-name">{{ auth.user()?.fullName }}</p>
+      <p class="user-role">{{ auth.isOfficer() ? 'Claims officer' : 'Claimant' }}</p>
+      <button type="button" class="button button-ghost" (click)="logout()">Sign out</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>
